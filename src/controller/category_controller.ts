@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 import { plainToInstance } from "class-transformer";
 import { validate } from "class-validator";
-import { CreateCategoryDTO } from "../dto/category/CreateCategoryDto";
+import { CreateCategoryDto } from "../dto/category/CreateCategoryDto";
 import { createCategory, deleteCategory, getCategories, getCategoryById, updateCategory } from "../model/category_model";
-import { UpdateCategoryDTO } from "src/dto/category/UpdateCategoryDto";
+import { UpdateCategoryDto } from "src/dto/category/UpdateCategoryDto";
 
 // List Categories Controller
 export const listCategories = async (req: Request, res: Response) => {
@@ -26,6 +26,11 @@ export const listCategories = async (req: Request, res: Response) => {
 export const getCategory = async (req: Request, res: Response) => {
     try {
         const { id } = req.params
+
+        if (!id || isNaN(Number(id))) {
+            return res.status(400).json({ message: "Geçerli bir kategori ID'si giriniz." });
+        }
+
         const category = await getCategoryById(Number(id))
         if (category) {
             res.status(200).json(category)
@@ -44,7 +49,7 @@ export const getCategory = async (req: Request, res: Response) => {
 export const addCategory = async (req: Request, res: Response) => {
     try {
 
-        const categoryDto = plainToInstance(CreateCategoryDTO, req.body);
+        const categoryDto = plainToInstance(CreateCategoryDto, req.body);
         const errors = await validate(categoryDto);
 
         if (errors.length > 0) {
@@ -79,7 +84,7 @@ export const editCategory = async (req: Request, res: Response) => {
             return res.status(400).json({ message: "Geçerli bir kategori ID'si giriniz." });
         }
 
-        const categoryDto = plainToInstance(UpdateCategoryDTO, req.body)
+        const categoryDto = plainToInstance(UpdateCategoryDto, req.body)
 
         const errors = await validate(categoryDto)
 
