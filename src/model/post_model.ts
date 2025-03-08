@@ -15,7 +15,6 @@ interface UpdatePostBody {
     category_id?: number
 }
 
-// Crud Functions
 // Posts List
 export const getPosts = async () => {
     return await prisma.post.findMany({
