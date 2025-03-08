@@ -1,0 +1,55 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Category {
+  id         Int       @id @default(autoincrement())
+  name       String
+  created_at DateTime  @default(now()) @map("created_at")
+  deleted_at DateTime? @default(now()) @map("deleted_at")
+  posts      Post[]
+}
+
+model Post {
+  id           Int       @id @default(autoincrement())
+  title        String
+  content      String
+  created_at   DateTime  @default(now()) @map("created_at")
+  published_at DateTime?
+  deleted_at   DateTime? @default(now()) @map("deleted_at")
+
+  Category    Category @relation(fields: [category_id], references: [id])
+  category_id Int
+
+  post_comments PostComment[]
+  post_tags     PostTag[]
+}
+
+model PostComment {
+  id             Int      @id @default(autoincrement())
+  content        String
+  commenter_name String
+  created_at     DateTime @default(now()) @map("created_at")
+
+  Post    Post @relation(fields: [post_id], references: [id])
+  post_id Int
+}
+
+model Tag {
+  id        Int       @id @default(autoincrement())
+  name      String
+  post_tags PostTag[]
+}
+
+model PostTag {
+  Post    Post @relation(fields: [post_id], references: [id])
+  post_id Int
+
+  Tag    Tag @relation(fields: [tag_id], references: [id])
+  tag_id Int @id
+}
