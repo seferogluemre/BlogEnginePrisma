@@ -16,8 +16,8 @@
     "baseUrl": ".",
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
-    "experimentalDecorators": false,
-    "emitDecoratorMetadata": false,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "skipLibCheck": true,
     "exactOptionalPropertyTypes": false,
     "strictNullChecks": true
@@ -25,7 +25,7 @@
   "ts-node": {
     "compilerOptions": {
       "moduleDetection": "force",
-      "module": "CommonJS",
+      "module": "NodeNext",
       "resolveJsonModule": true,
       "allowJs": true,
       "esModuleInterop": true,

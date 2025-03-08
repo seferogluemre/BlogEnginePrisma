@@ -10,8 +10,8 @@ datasource db {
 model Category {
   id         Int       @id @default(autoincrement())
   name       String
-  created_at DateTime  @default(now()) @map("created_at")
-  deleted_at DateTime? @default(now()) @map("deleted_at")
+  created_at DateTime  @default(now())
+  deleted_at DateTime?
   posts      Post[]
 }
 
@@ -19,9 +19,9 @@ model Post {
   id           Int       @id @default(autoincrement())
   title        String
   content      String
-  created_at   DateTime  @default(now()) @map("created_at")
+  created_at   DateTime  @default(now())
   published_at DateTime?
-  deleted_at   DateTime? @default(now()) @map("deleted_at")
+  deleted_at   DateTime?
 
   Category    Category @relation(fields: [category_id], references: [id])
   category_id Int
@@ -34,7 +34,7 @@ model PostComment {
   id             Int      @id @default(autoincrement())
   content        String
   commenter_name String
-  created_at     DateTime @default(now()) @map("created_at")
+  created_at     DateTime
 
   Post    Post @relation(fields: [post_id], references: [id])
   post_id Int
