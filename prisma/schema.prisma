@@ -51,5 +51,7 @@ model PostTag {
   post_id Int
 
   Tag    Tag @relation(fields: [tag_id], references: [id])
-  tag_id Int @id
+  tag_id Int
+
+  @@id([post_id, tag_id])
 }

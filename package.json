@@ -4,7 +4,9 @@
   "main": "index.js",
   "scripts": {
     "start": "npm start ./src/App.ts",
-    "dev": "pnpm tsx watch ./src/App.ts"
+    "dev": "pnpm tsx watch ./src/App.ts",
+    "generate": "prisma generate",
+    "case-format-schema": "npm prisma-case-format -f ./prisma/schema.prisma --table-case pascal --field-case camel --enum-case pascal --map-table-case snake,plural --map-field-case snake --map-enum-case snake --pluralize"
   },
   "keywords": [],
   "author": "Emre SEFEROĞLU",
@@ -23,6 +25,7 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "pg": "^8.13.3",
+    "prisma-case-format": "^1.7.3",
     "reflect-metadata": "^0.2.2",
     "tsx": "^4.19.3"
   }
