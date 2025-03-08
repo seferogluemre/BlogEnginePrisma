@@ -5,7 +5,9 @@ const app = express()
 const port = 3000
 
 app.use(express.json())
+
 app.use(express.urlencoded({ extended: true }));
+
 app.use('/categories', category_routes)
 
 app.listen(port, () => {
