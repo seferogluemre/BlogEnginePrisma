@@ -10,11 +10,17 @@ interface UpdateCategoryBody {
     name: string;
 }
 
+export interface QueryProps {
+    showDeleted?: string;
+    onlyDeleted?: string;
+}
+
 // Get Category List 
-export const getCategories = async () => {
-    return await prisma.category.findMany({
+export const getCategories = async (query: QueryProps) => {
+
+    let queryBuilder = await prisma.category.findMany({
         where: {
-            deleted_at: null
+            deleted_at: query.showDeleted === "true" ? undefined : null
         },
         select: {
             id: true,
@@ -22,6 +28,20 @@ export const getCategories = async () => {
             deleted_at: true
         }
     });
+
+    if (query.onlyDeleted) {
+        queryBuilder = await prisma.category.findMany({
+            where: {
+                deleted_at: { not: null }
+            },
+            select: {
+                id: true,
+                name: true,
+                deleted_at: true,
+            }
+        })
+    }
+    return queryBuilder;
 };
 
 // Get Category

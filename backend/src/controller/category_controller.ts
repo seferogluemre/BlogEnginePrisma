@@ -8,7 +8,7 @@ import { UpdateCategoryDto } from "src/dto/category/UpdateCategoryDto";
 // List Categories Controller
 export const listCategories = async (req: Request, res: Response) => {
     try {
-        const categories = await getCategories();
+        const categories = await getCategories(req.query);
         if (categories.length >= 0) {
             res.status(200).json({ data: categories })
         } else {

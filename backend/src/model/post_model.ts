@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -15,12 +15,52 @@ interface UpdatePostBody {
     category_id?: number
 }
 
+interface QueryProps {
+    category?: string;
+    status?: string;
+    draft?: string;
+    all?: string;
+    showDeleted?: string;
+    onlyDeleted?: string;
+}
+
+interface WhereConditionProps {
+    category_id?: number | Prisma.IntFilter;
+    status?: string | null;
+    draft?: boolean | null;
+    published_at?: { not: null } | null;
+    deleted_at?: { not: null } | null;
+}
+
+
 // Posts List
-export const getPosts = async () => {
-    return await prisma.post.findMany({
-        where: {
-            deleted_at: null,
-        },
+export const getPosts = async (query: QueryProps) => {
+    let whereConditions: WhereConditionProps = {};
+
+    if (query.category) {
+        whereConditions.category_id = Number(query.category);
+    }
+
+
+    if (query.status === "published") {
+        whereConditions.published_at = { not: null };
+    }
+
+    else if (query.draft === "true") {
+        whereConditions.published_at = null;
+    }
+
+    // Deleted filtreleri
+    if (query.showDeleted === 'true') {
+    } else if (query.onlyDeleted === 'true') {
+        whereConditions.deleted_at = { not: null };
+    } else {
+        whereConditions.deleted_at = null;
+    }
+
+    // Prisma sorgusu
+    const queryBuilder = await prisma.post.findMany({
+        where: whereConditions,
         select: {
             id: true,
             title: true,
@@ -31,8 +71,11 @@ export const getPosts = async () => {
             post_tags: true,
             post_comments: true,
         }
-    })
-}
+    });
+
+    return queryBuilder;
+};
+
 
 // Get Post
 export const getPostById = async (id: number) => {

@@ -8,7 +8,7 @@ import { UpdatePostDto } from "src/dto/post/UpdatePostDto";
 // List Posts Controller
 export const listPosts = async (req: Request, res: Response) => {
     try {
-        const posts = await getPosts();
+        const posts = await getPosts(req.query);
         if (posts.length >= 0) {
             res.status(200).json({ data: posts })
         } else {
