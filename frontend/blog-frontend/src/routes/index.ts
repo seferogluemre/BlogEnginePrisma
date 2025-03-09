@@ -1,0 +1,5 @@
+export { default as RootLayout } from './RootLayout'
+export { default as ErrorLayout } from './error-page'
+export { default as HomePage } from './home/Home'
+export { default as PostsPage } from './posts/Posts'
+export { default as PostDetailPage } from './PostDetail/PostDetail'

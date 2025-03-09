@@ -1,0 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Big+Shoulders:opsz,wght@10..72,100..900&family=Inter+Tight:ital,wght@0,100..900;1,100..900&display=swap');
+
+* {
+    font-family: "Big Shoulders", sans-serif !important;
+    font-size: 19px !important;
+    font-weight: 600 !important;
+}
