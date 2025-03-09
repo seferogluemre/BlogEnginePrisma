@@ -3,7 +3,7 @@ import { addPostTag, removePostTag } from "src/controller/postTag_controller";
 
 const router = Router()
 
-router.post('/', addPostTag)
+router.post('/:id/tags', addPostTag)
 router.delete("/:postId/tags/:tagId", removePostTag);
 
 
