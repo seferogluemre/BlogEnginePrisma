@@ -10,13 +10,13 @@ interface UpdateCategoryBody {
     name: string;
 }
 
-export interface QueryProps {
+export interface CategoryQueryProps {
     showDeleted?: string;
     onlyDeleted?: string;
 }
 
 // Get Category List 
-export const getCategories = async (query: QueryProps) => {
+export const getCategories = async (query: CategoryQueryProps) => {
 
     let queryBuilder = await prisma.category.findMany({
         where: {

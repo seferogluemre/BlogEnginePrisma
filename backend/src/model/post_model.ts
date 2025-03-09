@@ -15,42 +15,51 @@ interface UpdatePostBody {
     category_id?: number
 }
 
-interface QueryProps {
+interface PostQueryProps {
     category?: string;
     status?: string;
     draft?: string;
     all?: string;
     showDeleted?: string;
     onlyDeleted?: string;
+    tag_id: number;
 }
 
 interface WhereConditionProps {
-    category_id?: number | Prisma.IntFilter;
-    status?: string | null;
-    draft?: boolean | null;
-    published_at?: { not: null } | null;
+    category_id?: number;
+    tag_id?: number;
+    status?: string;
+    draft?: boolean;
+    published_at?: { not: null } | { equals: null };
     deleted_at?: { not: null } | null;
+    post_tags?: {
+        some: {
+            tag_id: number;
+        };
+    };
 }
 
-
-// Posts List
-export const getPosts = async (query: QueryProps) => {
+export const getPosts = async (query: PostQueryProps) => {
     let whereConditions: WhereConditionProps = {};
 
     if (query.category) {
         whereConditions.category_id = Number(query.category);
     }
 
+    if (query.tag_id) {
+        whereConditions.post_tags = {
+            some: {
+                tag_id: Number(query.tag_id)
+            }
+        };
+    }
 
     if (query.status === "published") {
         whereConditions.published_at = { not: null };
+    } else if (query.draft === "true") {
+        whereConditions.published_at = { equals: null };
     }
 
-    else if (query.draft === "true") {
-        whereConditions.published_at = null;
-    }
-
-    // Deleted filtreleri
     if (query.showDeleted === 'true') {
     } else if (query.onlyDeleted === 'true') {
         whereConditions.deleted_at = { not: null };
@@ -75,7 +84,6 @@ export const getPosts = async (query: QueryProps) => {
 
     return queryBuilder;
 };
-
 
 // Get Post
 export const getPostById = async (id: number) => {

@@ -1,15 +1,15 @@
 import { Request, Response } from "express";
 import { plainToInstance } from "class-transformer";
 import { validate } from "class-validator";
-import { createComment, deleteComment, getCommentById, getComments, updateComment } from "src/model/comment_model";
+import { createComment, deleteComment, getCommentById, getComments, CommentQueryProps, updateComment } from "src/model/comment_model";
 import { CreateCommentDto } from "src/dto/comment/CreateCommentDto";
 import { UpdateCommentDto } from "src/dto/comment/UpdateCommentDto";
 
 
 // List Post Comment controller
-export const listComments = async (req: Request, res: Response) => {
+export const listComments = async (req: Request<{}, {}, {}, CommentQueryProps>, res: Response) => {
     try {
-        const comments = await getComments();
+        const comments = await getComments(req.query);
         if (comments.length >= 0) {
             res.status(200).json({ data: comments })
         } else {

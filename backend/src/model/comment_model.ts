@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient;
 
@@ -14,18 +14,31 @@ interface UpdateCommentBody {
     post_id: number;
 }
 
+type WhereCondition = Prisma.PostCommentWhereInput;
+
+export interface CommentQueryProps {
+    post: number;
+    commenter_name: string;
+}
 
 // List Post Comments
-export const getComments = async () => {
-    return await prisma.postComment.findMany({
-        select: {
-            id: true,
-            content: true,
-            commenter_name: true,
-            post_id: true,
-            created_at: true,
-        }
-    })
+export const getComments = async (query: CommentQueryProps) => {
+    const whereCondition: WhereCondition = {};
+
+    if (query.post) {
+        whereCondition.post_id = query.post;
+    }
+
+    if (query.commenter_name) {
+        whereCondition.commenter_name = {
+            contains: query.commenter_name,
+        };
+    }
+
+    return prisma.postComment.findMany({
+        where: whereCondition,
+    });
+
 }
 
 // Get Post Comment
