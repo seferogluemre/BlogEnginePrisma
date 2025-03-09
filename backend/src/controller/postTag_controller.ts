@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { plainToInstance } from "class-transformer";
 import { validate } from "class-validator";
-import { createPostTag } from "src/model/postTag_model";
+import { createPostTag, deletePostTag } from "src/model/postTag_model";
 import { CreatePostTagDto } from "src/dto/postTag/CreatePostTagDto";
 
 // Create  Post Tag controller
@@ -32,3 +32,19 @@ export const addPostTag = async (req: Request, res: Response) => {
     }
 }
 
+export const removePostTag = async (req: Request, res: Response) => {
+    try {
+        const { postId, tagId } = req.params;
+        if (!postId || !tagId) {
+            return res.status(400).json({
+                message: "Hatalı gönderi veya etiket id'si lütfen tekrar deneyin"
+            })
+        }
+        const deletedTag = await deletePostTag(Number(postId), Number(tagId));
+
+        return res.status(200).json({ message: "Etiket başarıyla silindi" });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Etiket silinirken hata oluştu" });
+    }
+};

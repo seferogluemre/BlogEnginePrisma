@@ -67,7 +67,6 @@ export const getPosts = async (query: PostQueryProps) => {
         whereConditions.deleted_at = null;
     }
 
-    // Prisma sorgusu
     const queryBuilder = await prisma.post.findMany({
         where: whereConditions,
         select: {

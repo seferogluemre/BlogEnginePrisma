@@ -17,7 +17,7 @@ app.use('/categories', category_routes)
 app.use('/posts', post_routes)
 app.use('/comments', comment_routes)
 app.use('/tags', tag_routes)
-app.use('/posts/:id/tags', postTag_routes)
+app.use('/posts', postTag_routes);
 
 
 app.listen(port, () => {
