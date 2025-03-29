@@ -5,3 +5,9 @@ export class CreateTagDto {
     @IsNotEmpty()
     name!: string;
 }
+
+export class UpdateTagDto {
+    @IsString()
+    @IsNotEmpty()
+    name!: string;
+}

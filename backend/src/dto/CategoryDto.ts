@@ -5,3 +5,10 @@ export class CreateCategoryDto {
     @IsNotEmpty()
     name!: string;
 }
+
+
+export class UpdateCategoryDto {
+    @IsString()
+    @IsNotEmpty()
+    name!: string;
+}

@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { plainToInstance } from "class-transformer";
 import { validate } from "class-validator";
-import { CreatePostTagDto } from "src/dto/postTag/CreatePostTagDto";
+import { CreatePostTagDto } from "src/dto/CreatePostTagDto";
 import { PostTagModel } from "src/model/postTag_model";
 
 export class PostTagController {

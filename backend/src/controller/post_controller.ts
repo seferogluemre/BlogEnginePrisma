@@ -1,8 +1,7 @@
 import { Request, Response } from "express";
 import { plainToInstance } from "class-transformer";
 import { validate } from "class-validator";
-import { CreatePostDto } from "src/dto/post/CreatePostDto";
-import { UpdatePostDto } from "src/dto/post/UpdatePostDto";
+import { CreatePostDto, UpdatePostDto } from "src/dto/CreatePostDto";
 import { PostModel } from "src/model/post_model";
 
 export class PostController {

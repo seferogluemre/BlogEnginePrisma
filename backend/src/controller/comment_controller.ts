@@ -1,8 +1,7 @@
 import { Request, Response } from "express";
 import { plainToInstance } from "class-transformer";
 import { validate } from "class-validator";
-import { CreateCommentDto } from "src/dto/comment/CreateCommentDto";
-import { UpdateCommentDto } from "src/dto/comment/UpdateCommentDto";
+import { CreateCommentDto, UpdateCommentDto } from "src/dto/CommentDto";
 import { CommentQueryProps } from "src/types/comment_types";
 import { CommentModel } from "src/model/comment_model";
 

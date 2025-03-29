@@ -2,8 +2,7 @@ import e, { Request, Response } from "express";
 import { plainToInstance } from "class-transformer";
 import { validate } from "class-validator";
 import { TagModel } from "src/model/tag_model";
-import { CreateTagDto } from "src/dto/tag/CreateTagDto";
-import { UpdateTagDto } from "src/dto/tag/UpdateTagDto";
+import { CreateTagDto, UpdateTagDto } from "src/dto/CreateTagDto";
 
 export class TagController {
     static async list(req: Request, res: Response): Promise<void> {
