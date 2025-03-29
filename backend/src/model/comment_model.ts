@@ -1,22 +1,12 @@
 import { Prisma, PrismaClient } from "@prisma/client";
-import { CommentQueryProps, CreateCommentBody, UpdateCommentBody, WhereCondition } from "src/types/comment_types";
+import { COMMENT_WHERE_CLAUSE } from "src/constants/comment_constant";
+import { CommentQueryProps, CreateCommentBody, UpdateCommentBody } from "src/types/comment_types";
 
 const prisma = new PrismaClient();
 
 export class CommentModel {
     static async getAll(query: CommentQueryProps) {
-        const whereCondition: WhereCondition = {};
-
-        if (query.post) {
-            whereCondition.post_id = query.post;
-        }
-
-        if (query.commenter_name) {
-            whereCondition.commenter_name = {
-                contains: query.commenter_name,
-            };
-        }
-
+        const whereCondition = COMMENT_WHERE_CLAUSE(query);
         return prisma.postComment.findMany({
             where: whereCondition,
         });

@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { POST_WHERE_CLAUSE } from "src/constants/post_constant";
 import { CreatePostBody, PostQueryProps, UpdatePostBody, WhereConditionProps } from "src/types/post_types";
 
 const prisma = new PrismaClient();
@@ -6,33 +7,7 @@ const prisma = new PrismaClient();
 export class PostModel {
 
     static async list(query: PostQueryProps) {
-        let whereConditions: WhereConditionProps = {};
-
-        if (query.category) {
-            whereConditions.category_id = Number(query.category);
-        }
-
-        if (query.tag_id) {
-            whereConditions.post_tags = {
-                some: {
-                    tag_id: Number(query.tag_id)
-                }
-            };
-        }
-
-        if (query.status === "published") {
-            whereConditions.published_at = { not: null };
-        } else if (query.draft === "true") {
-            whereConditions.published_at = { equals: null };
-        }
-
-        if (query.showDeleted === 'true') {
-            // Handle showDeleted condition if needed
-        } else if (query.onlyDeleted === 'true') {
-            whereConditions.deleted_at = { not: null };
-        } else {
-            whereConditions.deleted_at = null;
-        }
+        const whereConditions = POST_WHERE_CLAUSE(query);
 
         const posts = await prisma.post.findMany({
             where: whereConditions,

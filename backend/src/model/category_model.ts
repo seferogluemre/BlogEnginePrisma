@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { CATEGORY_WHERE_CLAUSE } from "src/constants/category_constant";
 import { CategoryQueryProps, CreateCategoryBody, UpdateCategoryBody } from "src/types/category_types";
 
 const prisma = new PrismaClient();
@@ -6,10 +7,8 @@ const prisma = new PrismaClient();
 export class CategoryModel {
     static async getAll(query: CategoryQueryProps) {
         try {
-            let queryBuilder = await prisma.category.findMany({
-                where: {
-                    deleted_at: query.showDeleted === "true" ? undefined : null
-                },
+            const categories = await prisma.category.findMany({
+                where: CATEGORY_WHERE_CLAUSE(query),
                 select: {
                     id: true,
                     name: true,
@@ -17,19 +16,7 @@ export class CategoryModel {
                 }
             });
 
-            if (query.onlyDeleted) {
-                queryBuilder = await prisma.category.findMany({
-                    where: {
-                        deleted_at: { not: null }
-                    },
-                    select: {
-                        id: true,
-                        name: true,
-                        deleted_at: true,
-                    }
-                })
-            }
-            return queryBuilder;
+            return categories;
         } catch (error) {
             console.error("Hata tespit edildi", (error as Error).message)
         }
