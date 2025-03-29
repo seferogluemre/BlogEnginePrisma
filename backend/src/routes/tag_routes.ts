@@ -1,14 +1,13 @@
 import { Router } from "express";
-import { addTag, editTag, getTag, listTags, removeTag } from "src/controller/tag_controller";
+import { TagController } from "src/controller/tag_controller";
 
 const router = Router();
 
-
-router.get('/', listTags)
-router.get('/:id', getTag)
-router.post('/', addTag)
-router.patch('/:id', editTag)
-router.delete('/:id', removeTag)
+router.get('/', TagController.list)
+router.get('/:id', TagController.get)
+router.post('/', TagController.add)
+router.patch('/:id', TagController.edit)
+router.delete('/:id', TagController.remove)
 
 
 export default router;

@@ -1,133 +1,138 @@
 import { Request, Response } from "express";
 import { plainToInstance } from "class-transformer";
 import { validate } from "class-validator";
-import { createComment, deleteComment, getCommentById, getComments, CommentQueryProps, updateComment } from "src/model/comment_model";
 import { CreateCommentDto } from "src/dto/comment/CreateCommentDto";
 import { UpdateCommentDto } from "src/dto/comment/UpdateCommentDto";
+import { CommentQueryProps } from "src/types/comment_types";
+import { CommentModel } from "src/model/comment_model";
 
+export class CommentController {
 
-// List Post Comment controller
-export const listComments = async (req: Request<{}, {}, {}, CommentQueryProps>, res: Response): Promise<void> => {
-    try {
-        const comments = await getComments(req.query);
-        if (comments.length >= 0) {
-            res.status(200).json({ data: comments })
-        } else {
-            res.status(404).json({ message: "Yorum Listesi boş" })
+    static async list(req: Request<{}, {}, {}, CommentQueryProps>, res: Response): Promise<void> {
+        try {
+            const comments = await CommentModel.getAll(req.query);
+            if (comments.length >= 0) {
+                res.status(200).json({ data: comments });
+            } else {
+                res.status(404).json({ message: "Yorum Listesi boş" });
+            }
+        } catch (error) {
+            res.status(404).json({
+                message: "Yorumlar listesi alınırken bir hata oluştu",
+                error: (error as Error).message
+            });
         }
-    } catch (error) {
-        res.status(404).json({
-            message: "Yorumlar listesi alınırken bir hata oluştu",
-            error: (error as Error).message
-        });
     }
-}
 
-export const getComment = async (req: Request, res: Response): Promise<void> => {
-    try {
-        const { id } = req.params
+    static async get(req: Request, res: Response): Promise<void> {
+        try {
+            const { id } = req.params;
 
-        if (!id || isNaN(Number(id))) {
-            res.status(400).json({ message: "Geçerli bir yorum ID'si giriniz." });
+            if (!id || isNaN(Number(id))) {
+                res.status(400).json({ message: "Geçerli bir yorum ID'si giriniz." });
+                return;
+            }
+
+            const comment = await CommentModel.getById(Number(id));
+            if (comment) {
+                res.status(200).json(comment);
+            } else {
+                res.status(404).json({ message: "Yorum bulunamadı" });
+            }
+        } catch (error) {
+            res.status(404).json({
+                message: "Yorum alınırken bir hata oluştu",
+                error: (error as Error).message
+            });
         }
-
-        const comment = await getCommentById(Number(id))
-        if (comment) {
-            res.status(200).json(comment)
-        } else {
-            res.status(404).json({ message: "Yorum bulunamadı" })
-        }
-    } catch (error) {
-        res.status(404).json({
-            message: "Yorum alınırken bir hata oluştu",
-            error: (error as Error).message
-        });
     }
-}
 
-// Create Post Comment controller
-export const addComment = async (req: Request, res: Response): Promise<void> => {
-    try {
-        const commentDto = plainToInstance(CreateCommentDto, req.body)
+    static async add(req: Request, res: Response): Promise<void> {
+        try {
+            const commentDto = plainToInstance(CreateCommentDto, req.body);
+            const errors = await validate(commentDto);
 
-        const errors = await validate(commentDto)
+            if (errors.length > 0) {
+                res.status(400).json({
+                    message: "Validasyon hatası lütfen tekrar deneyiniz",
+                    error: errors.map(err => err.constraints)
+                });
+                return;
+            }
 
-        if (errors.length > 0) {
-            res.status(400).json({
-                message: "Validasyon hatası lütfen tekrar deneyiniz",
-                error: errors.map(err => err.constraints)
-            })
+            const createdComment = await CommentModel.create(commentDto);
+            res.status(201).json({
+                message: "Yorumunuz oluşturuldu",
+                data: createdComment
+            });
+
+        } catch (error) {
+            res.status(404).json({
+                message: "Yorum oluşturulurken bir hata oluştu",
+                error: (error as Error).message
+            });
         }
-
-        const createdComment = await createComment(commentDto)
-        res.status(201).json({
-            message: "Yorumunuz oluşturuldu",
-            data: createdComment
-        })
-
-    } catch (error) {
-        res.status(404).json({
-            message: "Yorum oluşturulurken bir hata oluştu",
-            error: (error as Error).message
-        });
     }
-}
 
-// Update Post Comment controller
-export const editComment = async (req: Request, res: Response): Promise<void> => {
-    try {
-        const { id } = req.params;
-        if (!id || isNaN(Number(id))) {
-            res.status(400).json({ message: "Geçerli bir yorum ID'si giriniz." });
+    static async edit(req: Request, res: Response): Promise<void> {
+        try {
+            const { id } = req.params;
+            if (!id || isNaN(Number(id))) {
+                res.status(400).json({ message: "Geçerli bir yorum ID'si giriniz." });
+                return;
+            }
+
+            const commentDto = plainToInstance(UpdateCommentDto, req.body);
+            const errors = await validate(commentDto);
+
+            if (errors.length > 0) {
+                res.status(400).json({
+                    message: "Validasyon hatası lütfen tekrar deneyiniz",
+                    error: errors.map(err => err.constraints)
+                });
+                return;
+            }
+
+            const comment = await CommentModel.getById(Number(id));
+            if (!comment) {
+                res.status(404).json({ message: "Güncellenicek yorum bulunamadı" });
+                return;
+            }
+
+            const updatedComment = await CommentModel.update(Number(id), commentDto);
+            res.status(200).json({ message: "Yorumunuz başarıyla güncellendi", data: updatedComment });
+
+        } catch (error) {
+            res.status(404).json({
+                message: "Yorum güncellenirken bir hata oluştu",
+                error: (error as Error).message
+            });
         }
-
-        const commentDto = plainToInstance(UpdateCommentDto, req.body)
-
-        const errors = await validate(commentDto)
-
-        if (errors.length > 0) {
-            res.status(400).json({
-                message: "Validasyon hatası lütfen tekrar deneyiniz",
-                error: errors.map(err => err.constraints)
-            })
-        }
-
-        const comment = await getCommentById(Number(id))
-        if (!comment) {
-            res.status(404).json({ message: "Güncellenicek yorum bulunamadı" })
-        }
-
-        const updatedComment = await updateComment(Number(id), commentDto)
-
-        res.status(200).json({ message: "Yorumunuz başarıyla güncellendi", data: updatedComment });
-
-    } catch (error) {
-        res.status(404).json({
-            message: "Yorum güncellenirken bir hata oluştu",
-            error: (error as Error).message
-        });
     }
-}
 
-export const removeComment = async (req: Request, res: Response): Promise<void> => {
-    try {
-        const { id } = req.params
+    static async remove(req: Request, res: Response): Promise<void> {
+        try {
+            const { id } = req.params;
 
-        if (!id || isNaN(Number(id))) {
-            res.status(400).json({ message: "Geçerli bir yorum ID'si giriniz." });
+            if (!id || isNaN(Number(id))) {
+                res.status(400).json({ message: "Geçerli bir yorum ID'si giriniz." });
+                return;
+            }
+
+            const existingComment = await CommentModel.getById(Number(id));
+
+            if (!existingComment) {
+                res.status(404).json({ message: "Silinecek yorum bulunamadı." });
+                return;
+            }
+
+            await CommentModel.delete(Number(id));
+            res.status(201).json({ message: "Yorum başarıyla silindi" });
+        } catch (error) {
+            res.status(404).json({
+                message: "Yorum silinirken bir hata oluştu",
+                error: (error as Error).message
+            });
         }
-        const existingComment = await getCommentById(Number(id))
-
-        if (!existingComment) {
-            res.status(404).json({ message: "Silincek olan yorum bulunamadı." });
-        }
-
-        const deletedComment = await deleteComment(Number(id))
-        res.status(201).json({ message: "Yorum başarıyla silindi" })
-    } catch (error) {
-        res.status(404).json({
-            message: "Yorum silinirken bir hata oluştu",
-            error: (error as Error).message
-        });
     }
 }

@@ -1,10 +1,9 @@
 import { Router } from "express";
-import { addPostTag, removePostTag } from "src/controller/postTag_controller";
+import { PostTagController } from "src/controller/postTag_controller";
 
 const router = Router()
 
-router.post('/:id/tags', addPostTag)
-router.delete("/:postId/tags/:tagId", removePostTag);
-
+router.post('/:id/tags', PostTagController.add)
+router.delete("/:postId/tags/:tagId", PostTagController.edit);
 
 export default router;

@@ -2,135 +2,107 @@ import { Request, Response } from "express";
 import { plainToInstance } from "class-transformer";
 import { validate } from "class-validator";
 import { CreateCategoryDto } from "../dto/category/CreateCategoryDto";
-import { createCategory, deleteCategory, getCategories, getCategoryById, updateCategory } from "../model/category_model";
 import { UpdateCategoryDto } from "src/dto/category/UpdateCategoryDto";
+import { CategoryModel } from "src/model/category_model";
 
-// List Categories Controller
-export const listCategories = async (req: Request, res: Response): Promise<void> => {
-    try {
-        const categories = await getCategories(req.query);
-        if (categories.length >= 0) {
-            res.status(200).json({ data: categories })
-        } else {
-            res.status(404).json({ message: "Kategori Listesi boş" })
-        }
-    } catch (error) {
-        res.status(404).json({
-            message: "Kategori Listesi alınırken bir hata oluştu",
-            error: (error as Error).message
-        });
-    }
-}
-
-export const getCategory = async (req: Request, res: Response): Promise<void> => {
-    try {
-        const { id } = req.params
-
-        if (!id || isNaN(Number(id))) {
-            res.status(400).json({ message: "Geçerli bir kategori ID'si giriniz." });
-        }
-
-        const category = await getCategoryById(Number(id))
-        if (category) {
-            res.status(200).json(category)
-        } else {
-            res.status(404).json({ message: "Kategori bulunamadı" })
-        }
-    } catch (error) {
-        res.status(404).json({
-            message: "Kategori alınırken bir hata oluştu",
-            error: (error as Error).message
-        });
-    }
-}
-
-// Add Category Controller
-export const addCategory = async (req: Request, res: Response): Promise<void> => {
-    try {
-
-        const categoryDto = plainToInstance(CreateCategoryDto, req.body);
-        const errors = await validate(categoryDto);
-
-        if (errors.length > 0) {
-            res.status(400).json({
-                message: "Validasyon hatası, lütfen alanları kontrol ediniz",
-                errors: errors.map(err => err.constraints),
+export class CategoryController {
+    static async list(req: Request, res: Response): Promise<void> {
+        try {
+            const categories = await CategoryModel.getAll(req.query);
+            res.status(200).json({ data: categories });
+        } catch (error) {
+            res.status(404).json({
+                message: "Kategori Listesi alınırken bir hata oluştu",
+                error: (error as Error).message
             });
         }
-
-        const createdCategory = await createCategory({
-            name: categoryDto.name
-        });
-
-        res.status(201).json({
-            message: "Kategori başarıyla oluşturuldu",
-            category: createdCategory,
-        });
-    } catch (error) {
-        res.status(404).json({
-            message: "Kategori oluşturulurken bir hata oluştu",
-            error: (error as Error).message
-        });
     }
-};
 
-// Update Category Controller
-export const editCategory = async (req: Request, res: Response): Promise<void> => {
-    try {
-        const { id } = req.params;
+    static async get(req: Request, res: Response): Promise<void> {
+        try {
+            const { id } = req.params;
 
-        if (!id || isNaN(Number(id))) {
-            res.status(400).json({ message: "Geçerli bir kategori ID'si giriniz." });
+            if (!id || isNaN(Number(id))) {
+                res.status(400).json({ message: "Geçerli bir kategori ID'si giriniz." });
+                return;
+            }
+
+            const category = await CategoryModel.getById(Number(id));
+            res.status(200).json({ data: category });
+        } catch (error) {
+            res.status(404).json({
+                message: "Kategori alınırken bir hata oluştu",
+                error: (error as Error).message
+            });
         }
-
-        const categoryDto = plainToInstance(UpdateCategoryDto, req.body)
-
-        const errors = await validate(categoryDto)
-
-        if (errors.length > 0) {
-            res.status(400).json({
-                message: "Validasyon hatası lütfen kontrol edip tekrar deneyin",
-                error: errors.map(err => err.constraints)
-            })
-        }
-
-        const existingCategory = await getCategoryById(Number(id))
-
-        if (!existingCategory) {
-            res.status(404).json({ message: "Güncellenecek kategori bulunamadı." });
-        }
-
-        const updatedCategory = await updateCategory(Number(id), categoryDto)
-
-        res.status(200).json({ message: "Kategori başarıyla güncellendi", data: updatedCategory });
-
-    } catch (error) {
-        res.status(404).json({
-            message: "Kategori güncellenirken bir hata oluştu",
-            error: (error as Error).message
-        });
     }
-}
 
-// Delete category controller
-export const removeCategory = async (req: Request, res: Response): Promise<void> => {
-    try {
-        const { id } = req.params;
+    static async add(req: Request, res: Response): Promise<void> {
+        try {
+            const categoryDto = plainToInstance(CreateCategoryDto, req.body);
+            const errors = await validate(categoryDto);
 
-        if (!id || isNaN(Number(id))) {
-            res.status(400).json({ message: "Geçerli bir kategori ID'si giriniz." });
+            if (errors.length > 0) {
+                res.status(400).json({
+                    message: "Validasyon hatası, lütfen alanları kontrol ediniz",
+                    errors: errors.map(err => err.constraints),
+                });
+                return;
+            }
+
+            const createdCategory = await CategoryModel.create({ name: categoryDto.name });
+            res.status(201).json({ data: createdCategory });
+        } catch (error) {
+            res.status(404).json({
+                message: "Kategori oluşturulurken bir hata oluştu",
+                error: (error as Error).message
+            });
         }
+    }
 
-        const existingCategory = await getCategoryById(Number(id))
+    static async edit(req: Request, res: Response): Promise<void> {
+        try {
+            const { id } = req.params;
 
-        if (!existingCategory) {
-            res.status(404).json({ message: "Silincek olan kategori bulunamadı." });
+            if (!id || isNaN(Number(id))) {
+                res.status(400).json({ message: "Geçerli bir kategori ID'si giriniz." });
+                return;
+            }
+
+            const categoryDto = plainToInstance(UpdateCategoryDto, req.body);
+            const errors = await validate(categoryDto);
+
+            if (errors.length > 0) {
+                res.status(400).json({
+                    message: "Validasyon hatası, lütfen kontrol ediniz",
+                    errors: errors.map(err => err.constraints),
+                });
+                return;
+            }
+
+            const updatedCategory = await CategoryModel.update(Number(id), categoryDto);
+            res.status(200).json({ data: updatedCategory });
+        } catch (error) {
+            res.status(404).json({
+                message: "Kategori güncellenirken bir hata oluştu",
+                error: (error as Error).message
+            });
         }
+    }
 
-        const deletedCategory = await deleteCategory(Number(id))
-        res.status(201).json({ message: "Kategori Başarıyla kaldırıldı" })
+    static async remove(req: Request, res: Response): Promise<void> {
+        try {
+            const { id } = req.params;
 
-    } catch (error) {
-        res.status(404).json({ message: (error as Error).message })
+            if (!id || isNaN(Number(id))) {
+                res.status(400).json({ message: "Geçerli bir kategori ID'si giriniz." });
+                return;
+            }
+
+            await CategoryModel.delete(Number(id));
+            res.status(201).json({ message: "Kategori başarıyla kaldırıldı" });
+        } catch (error) {
+            res.status(404).json({ message: (error as Error).message });
+        }
     }
 }

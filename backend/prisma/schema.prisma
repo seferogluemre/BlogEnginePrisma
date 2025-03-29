@@ -7,6 +7,22 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum UserRole {
+  member
+  moderator
+  admin
+}
+
+model User {
+  id             Int       @id @default(autoincrement()) @map("id")
+  name           String    @map("name")
+  username       String    @map("username")
+  hashedPassword String    @map("hashed_password")
+  role           UserRole  @map("role")
+  createdAt      DateTime  @default(now()) @map("created_at")
+  deletedAt      DateTime? @map("deleted_at")
+}
+
 model Category {
   id         Int       @id @default(autoincrement()) @map("id")
   name       String    @map("name")
