@@ -1,19 +1,7 @@
 import { PrismaClient } from "@prisma/client";
+import { CategoryQueryProps, CreateCategoryBody, UpdateCategoryBody } from "src/types/category_types";
 
 const prisma = new PrismaClient();
-
-// Types
-interface CreateCategoryBody {
-    name: string;
-}
-interface UpdateCategoryBody {
-    name: string;
-}
-
-export interface CategoryQueryProps {
-    showDeleted?: string;
-    onlyDeleted?: string;
-}
 
 // Get Category List 
 export const getCategories = async (query: CategoryQueryProps) => {
@@ -25,7 +13,7 @@ export const getCategories = async (query: CategoryQueryProps) => {
         select: {
             id: true,
             name: true,
-            deleted_at: true
+            deleted_at: true,
         }
     });
 
@@ -67,7 +55,6 @@ export const createCategory = async (data: CreateCategoryBody) => {
     return await prisma.category.create({ data: data });
 }
 
-// Update Category
 export const updateCategory = async (id: number, data: UpdateCategoryBody) => {
     if (data.name !== null) {
         return await prisma.category.update({

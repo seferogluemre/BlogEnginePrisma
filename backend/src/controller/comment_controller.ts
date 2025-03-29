@@ -7,7 +7,7 @@ import { UpdateCommentDto } from "src/dto/comment/UpdateCommentDto";
 
 
 // List Post Comment controller
-export const listComments = async (req: Request<{}, {}, {}, CommentQueryProps>, res: Response) => {
+export const listComments = async (req: Request<{}, {}, {}, CommentQueryProps>, res: Response): Promise<void> => {
     try {
         const comments = await getComments(req.query);
         if (comments.length >= 0) {
@@ -16,19 +16,19 @@ export const listComments = async (req: Request<{}, {}, {}, CommentQueryProps>, 
             res.status(404).json({ message: "Yorum Listesi boş" })
         }
     } catch (error) {
-        return res.status(404).json({
+        res.status(404).json({
             message: "Yorumlar listesi alınırken bir hata oluştu",
             error: (error as Error).message
         });
     }
 }
 
-export const getComment = async (req: Request, res: Response) => {
+export const getComment = async (req: Request, res: Response): Promise<void> => {
     try {
         const { id } = req.params
 
         if (!id || isNaN(Number(id))) {
-            return res.status(400).json({ message: "Geçerli bir yorum ID'si giriniz." });
+            res.status(400).json({ message: "Geçerli bir yorum ID'si giriniz." });
         }
 
         const comment = await getCommentById(Number(id))
@@ -38,7 +38,7 @@ export const getComment = async (req: Request, res: Response) => {
             res.status(404).json({ message: "Yorum bulunamadı" })
         }
     } catch (error) {
-        return res.status(404).json({
+        res.status(404).json({
             message: "Yorum alınırken bir hata oluştu",
             error: (error as Error).message
         });
@@ -46,27 +46,27 @@ export const getComment = async (req: Request, res: Response) => {
 }
 
 // Create Post Comment controller
-export const addComment = async (req: Request, res: Response) => {
+export const addComment = async (req: Request, res: Response): Promise<void> => {
     try {
         const commentDto = plainToInstance(CreateCommentDto, req.body)
 
         const errors = await validate(commentDto)
 
         if (errors.length > 0) {
-            return res.status(400).json({
+            res.status(400).json({
                 message: "Validasyon hatası lütfen tekrar deneyiniz",
                 error: errors.map(err => err.constraints)
             })
         }
 
         const createdComment = await createComment(commentDto)
-        return res.status(201).json({
+        res.status(201).json({
             message: "Yorumunuz oluşturuldu",
             data: createdComment
         })
 
     } catch (error) {
-        return res.status(404).json({
+        res.status(404).json({
             message: "Yorum oluşturulurken bir hata oluştu",
             error: (error as Error).message
         });
@@ -74,11 +74,11 @@ export const addComment = async (req: Request, res: Response) => {
 }
 
 // Update Post Comment controller
-export const editComment = async (req: Request, res: Response) => {
+export const editComment = async (req: Request, res: Response): Promise<void> => {
     try {
         const { id } = req.params;
         if (!id || isNaN(Number(id))) {
-            return res.status(400).json({ message: "Geçerli bir yorum ID'si giriniz." });
+            res.status(400).json({ message: "Geçerli bir yorum ID'si giriniz." });
         }
 
         const commentDto = plainToInstance(UpdateCommentDto, req.body)
@@ -86,7 +86,7 @@ export const editComment = async (req: Request, res: Response) => {
         const errors = await validate(commentDto)
 
         if (errors.length > 0) {
-            return res.status(400).json({
+            res.status(400).json({
                 message: "Validasyon hatası lütfen tekrar deneyiniz",
                 error: errors.map(err => err.constraints)
             })
@@ -99,33 +99,33 @@ export const editComment = async (req: Request, res: Response) => {
 
         const updatedComment = await updateComment(Number(id), commentDto)
 
-        return res.status(200).json({ message: "Yorumunuz başarıyla güncellendi", data: updatedComment });
+        res.status(200).json({ message: "Yorumunuz başarıyla güncellendi", data: updatedComment });
 
     } catch (error) {
-        return res.status(404).json({
+        res.status(404).json({
             message: "Yorum güncellenirken bir hata oluştu",
             error: (error as Error).message
         });
     }
 }
 
-export const removeComment = async (req: Request, res: Response) => {
+export const removeComment = async (req: Request, res: Response): Promise<void> => {
     try {
         const { id } = req.params
 
         if (!id || isNaN(Number(id))) {
-            return res.status(400).json({ message: "Geçerli bir yorum ID'si giriniz." });
+            res.status(400).json({ message: "Geçerli bir yorum ID'si giriniz." });
         }
         const existingComment = await getCommentById(Number(id))
 
         if (!existingComment) {
-            return res.status(404).json({ message: "Silincek olan yorum bulunamadı." });
+            res.status(404).json({ message: "Silincek olan yorum bulunamadı." });
         }
 
         const deletedComment = await deleteComment(Number(id))
         res.status(201).json({ message: "Yorum başarıyla silindi" })
     } catch (error) {
-        return res.status(404).json({
+        res.status(404).json({
             message: "Yorum silinirken bir hata oluştu",
             error: (error as Error).message
         });

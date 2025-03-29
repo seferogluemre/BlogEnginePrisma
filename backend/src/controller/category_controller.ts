@@ -6,7 +6,7 @@ import { createCategory, deleteCategory, getCategories, getCategoryById, updateC
 import { UpdateCategoryDto } from "src/dto/category/UpdateCategoryDto";
 
 // List Categories Controller
-export const listCategories = async (req: Request, res: Response) => {
+export const listCategories = async (req: Request, res: Response): Promise<void> => {
     try {
         const categories = await getCategories(req.query);
         if (categories.length >= 0) {
@@ -15,20 +15,19 @@ export const listCategories = async (req: Request, res: Response) => {
             res.status(404).json({ message: "Kategori Listesi boş" })
         }
     } catch (error) {
-        return res.status(404).json({
+        res.status(404).json({
             message: "Kategori Listesi alınırken bir hata oluştu",
             error: (error as Error).message
         });
     }
 }
 
-// Get Category Controller
-export const getCategory = async (req: Request, res: Response) => {
+export const getCategory = async (req: Request, res: Response): Promise<void> => {
     try {
         const { id } = req.params
 
         if (!id || isNaN(Number(id))) {
-            return res.status(400).json({ message: "Geçerli bir kategori ID'si giriniz." });
+            res.status(400).json({ message: "Geçerli bir kategori ID'si giriniz." });
         }
 
         const category = await getCategoryById(Number(id))
@@ -38,7 +37,7 @@ export const getCategory = async (req: Request, res: Response) => {
             res.status(404).json({ message: "Kategori bulunamadı" })
         }
     } catch (error) {
-        return res.status(404).json({
+        res.status(404).json({
             message: "Kategori alınırken bir hata oluştu",
             error: (error as Error).message
         });
@@ -46,14 +45,14 @@ export const getCategory = async (req: Request, res: Response) => {
 }
 
 // Add Category Controller
-export const addCategory = async (req: Request, res: Response) => {
+export const addCategory = async (req: Request, res: Response): Promise<void> => {
     try {
 
         const categoryDto = plainToInstance(CreateCategoryDto, req.body);
         const errors = await validate(categoryDto);
 
         if (errors.length > 0) {
-            return res.status(400).json({
+            res.status(400).json({
                 message: "Validasyon hatası, lütfen alanları kontrol ediniz",
                 errors: errors.map(err => err.constraints),
             });
@@ -63,12 +62,12 @@ export const addCategory = async (req: Request, res: Response) => {
             name: categoryDto.name
         });
 
-        return res.status(201).json({
+        res.status(201).json({
             message: "Kategori başarıyla oluşturuldu",
             category: createdCategory,
         });
     } catch (error) {
-        return res.status(404).json({
+        res.status(404).json({
             message: "Kategori oluşturulurken bir hata oluştu",
             error: (error as Error).message
         });
@@ -76,12 +75,12 @@ export const addCategory = async (req: Request, res: Response) => {
 };
 
 // Update Category Controller
-export const editCategory = async (req: Request, res: Response) => {
+export const editCategory = async (req: Request, res: Response): Promise<void> => {
     try {
         const { id } = req.params;
 
         if (!id || isNaN(Number(id))) {
-            return res.status(400).json({ message: "Geçerli bir kategori ID'si giriniz." });
+            res.status(400).json({ message: "Geçerli bir kategori ID'si giriniz." });
         }
 
         const categoryDto = plainToInstance(UpdateCategoryDto, req.body)
@@ -89,7 +88,7 @@ export const editCategory = async (req: Request, res: Response) => {
         const errors = await validate(categoryDto)
 
         if (errors.length > 0) {
-            return res.status(400).json({
+            res.status(400).json({
                 message: "Validasyon hatası lütfen kontrol edip tekrar deneyin",
                 error: errors.map(err => err.constraints)
             })
@@ -98,15 +97,15 @@ export const editCategory = async (req: Request, res: Response) => {
         const existingCategory = await getCategoryById(Number(id))
 
         if (!existingCategory) {
-            return res.status(404).json({ message: "Güncellenecek kategori bulunamadı." });
+            res.status(404).json({ message: "Güncellenecek kategori bulunamadı." });
         }
 
         const updatedCategory = await updateCategory(Number(id), categoryDto)
 
-        return res.status(200).json({ message: "Kategori başarıyla güncellendi", data: updatedCategory });
+        res.status(200).json({ message: "Kategori başarıyla güncellendi", data: updatedCategory });
 
     } catch (error) {
-        return res.status(404).json({
+        res.status(404).json({
             message: "Kategori güncellenirken bir hata oluştu",
             error: (error as Error).message
         });
@@ -114,25 +113,24 @@ export const editCategory = async (req: Request, res: Response) => {
 }
 
 // Delete category controller
-export const removeCategory = async (req: Request, res: Response) => {
+export const removeCategory = async (req: Request, res: Response): Promise<void> => {
     try {
         const { id } = req.params;
 
         if (!id || isNaN(Number(id))) {
-            return res.status(400).json({ message: "Geçerli bir kategori ID'si giriniz." });
+            res.status(400).json({ message: "Geçerli bir kategori ID'si giriniz." });
         }
 
         const existingCategory = await getCategoryById(Number(id))
 
         if (!existingCategory) {
-            return res.status(404).json({ message: "Silincek olan kategori bulunamadı." });
+            res.status(404).json({ message: "Silincek olan kategori bulunamadı." });
         }
 
         const deletedCategory = await deleteCategory(Number(id))
-        return res.status(201).json({ message: "Kategori Başarıyla kaldırıldı" })
+        res.status(201).json({ message: "Kategori Başarıyla kaldırıldı" })
 
     } catch (error) {
         res.status(404).json({ message: (error as Error).message })
-        return;
     }
 }

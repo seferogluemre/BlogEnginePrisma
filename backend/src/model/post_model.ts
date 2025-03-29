@@ -15,7 +15,7 @@ interface UpdatePostBody {
     category_id?: number
 }
 
-interface PostQueryProps {
+export interface PostQueryProps {
     category?: string;
     status?: string;
     draft?: string;
