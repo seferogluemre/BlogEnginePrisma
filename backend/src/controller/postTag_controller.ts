@@ -8,19 +8,7 @@ export class PostTagController {
     // Add Post Tag
     static async add(req: Request, res: Response): Promise<void> {
         try {
-            const postTagDto = plainToInstance(CreatePostTagDto, req.body);
-
-            const errors = await validate(postTagDto);
-
-            if (errors.length > 0) {
-                res.status(400).json({
-                    message: "Validasyon hatası lütfen alanları kontrol ediniz",
-                    error: errors.map(err => err.constraints)
-                });
-                return;
-            }
-
-            const createdPostTag = await PostTagModel.create(postTagDto);
+            const createdPostTag = await PostTagModel.create(req.body);
 
             res.status(201).json({
                 message: "Gönderi etiketi başarıyla oluşturuldu",

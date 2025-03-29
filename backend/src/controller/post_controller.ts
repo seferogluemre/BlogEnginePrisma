@@ -46,18 +46,7 @@ export class PostController {
     // Create Post Controller
     static async add(req: Request, res: Response): Promise<void> {
         try {
-            const postDto = plainToInstance(CreatePostDto, req.body)
-
-            const errors = await validate(postDto)
-
-            if (errors.length > 0) {
-                res.status(400).json({
-                    message: "Validasyon hatası lütfen alanları kontrol ediniz",
-                    error: errors.map(err => err.constraints)
-                })
-            }
-
-            const createdPost = await PostModel.create(postDto)
+            const createdPost = await PostModel.create(req.body)
 
             res.status(201).json({
                 message: "Gönderi başarıyla oluşturuldu",
@@ -78,23 +67,12 @@ export class PostController {
             if (!id || isNaN(Number(id))) {
                 res.status(400).json({ message: "Geçerli bir gönderi ID'si giriniz." });
             }
-            const postDto = plainToInstance(UpdatePostDto, req.body)
-
-            const errors = await validate(postDto)
-
-            if (errors.length > 0) {
-                res.status(400).json({
-                    message: "Validasyon hatası lütfen tekrar deneyiniz",
-                    error: errors.map(err => err.constraints)
-                })
-            }
-
             const post = await PostModel.getById(Number(id))
             if (!post) {
                 res.status(404).json({ message: "Güncellenicek gönderi bulunamadı" })
             }
 
-            const updatedPost = await PostModel.update(Number(id), postDto)
+            const updatedPost = await PostModel.update(Number(id), req.body)
 
             res.status(200).json({ message: "Gönderi başarıyla güncellendi", data: updatedPost });
         } catch (error) {

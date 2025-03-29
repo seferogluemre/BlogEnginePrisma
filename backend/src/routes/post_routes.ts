@@ -1,12 +1,14 @@
 import { Router } from "express";
 import { PostController } from "src/controller/post_controller";
+import { CreatePostDto, UpdatePostDto } from "src/dto/CreatePostDto";
+import { validateAndCheckParams, validateDto } from "src/middlewares/requestValidationMiddleware";
 
 const router = Router()
 
 router.get('/', PostController.list)
 router.get('/:id', PostController.get)
-router.post('/', PostController.add)
-router.patch('/:id', PostController.edit)
+router.post('/', validateDto(CreatePostDto), PostController.add)
+router.patch('/:id', validateAndCheckParams(UpdatePostDto), PostController.edit)
 router.delete('/:id', PostController.remove)
 
 

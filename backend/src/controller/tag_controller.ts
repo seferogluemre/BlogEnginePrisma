@@ -37,12 +37,7 @@ export class TagController {
 
     static async add(req: Request, res: Response): Promise<void> {
         try {
-            const tagDto = plainToInstance(CreateTagDto, req.body);
-            const errors = await validate(tagDto);
-            if (errors.length > 0) {
-                res.status(400).json({ message: "Validasyon hatası", error: errors.map(err => err.constraints) });
-            }
-            const createdTag = await TagModel.create(tagDto);
+            const createdTag = await TagModel.create(req.body);
             res.status(201).json({ message: "Etiket başarıyla oluşturuldu", data: createdTag });
         } catch (error) {
             res.status(500).json({ message: "Etiket oluşturulurken hata oluştu", error });
@@ -55,12 +50,7 @@ export class TagController {
             if (!id || isNaN(Number(id))) {
                 res.status(400).json({ message: "Geçerli bir etiket ID'si giriniz." });
             }
-            const tagDto = plainToInstance(UpdateTagDto, req.body);
-            const errors = await validate(tagDto);
-            if (errors.length > 0) {
-                res.status(400).json({ message: "Validasyon hatası", error: errors.map(err => err.constraints) });
-            }
-            const updatedTag = await TagModel.update(Number(id), tagDto);
+            const updatedTag = await TagModel.update(Number(id), req.body);
             res.status(200).json({ message: "Etiket başarıyla güncellendi", data: updatedTag });
         } catch (error) {
             res.status(500).json({ message: "Etiket güncellenirken hata oluştu", error });

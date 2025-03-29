@@ -38,18 +38,8 @@ export class CategoryController {
 
     static async add(req: Request, res: Response): Promise<void> {
         try {
-            const categoryDto = plainToInstance(CreateCategoryDto, req.body);
-            const errors = await validate(categoryDto);
-
-            if (errors.length > 0) {
-                res.status(400).json({
-                    message: "Validasyon hatası, lütfen alanları kontrol ediniz",
-                    errors: errors.map(err => err.constraints),
-                });
-                return;
-            }
-
-            const createdCategory = await CategoryModel.create({ name: categoryDto.name });
+            const { name } = req.body;
+            const createdCategory = await CategoryModel.create({ name: name });
             res.status(201).json({ data: createdCategory });
         } catch (error) {
             res.status(404).json({
@@ -67,19 +57,8 @@ export class CategoryController {
                 res.status(400).json({ message: "Geçerli bir kategori ID'si giriniz." });
                 return;
             }
-
-            const categoryDto = plainToInstance(UpdateCategoryDto, req.body);
-            const errors = await validate(categoryDto);
-
-            if (errors.length > 0) {
-                res.status(400).json({
-                    message: "Validasyon hatası, lütfen kontrol ediniz",
-                    errors: errors.map(err => err.constraints),
-                });
-                return;
-            }
-
-            const updatedCategory = await CategoryModel.update(Number(id), categoryDto);
+            const body = req.body;
+            const updatedCategory = await CategoryModel.update(Number(id), body);
             res.status(200).json({ data: updatedCategory });
         } catch (error) {
             res.status(404).json({

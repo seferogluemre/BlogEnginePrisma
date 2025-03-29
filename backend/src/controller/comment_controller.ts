@@ -48,18 +48,7 @@ export class CommentController {
 
     static async add(req: Request, res: Response): Promise<void> {
         try {
-            const commentDto = plainToInstance(CreateCommentDto, req.body);
-            const errors = await validate(commentDto);
-
-            if (errors.length > 0) {
-                res.status(400).json({
-                    message: "Validasyon hatası lütfen tekrar deneyiniz",
-                    error: errors.map(err => err.constraints)
-                });
-                return;
-            }
-
-            const createdComment = await CommentModel.create(commentDto);
+            const createdComment = await CommentModel.create(req.body);
             res.status(201).json({
                 message: "Yorumunuz oluşturuldu",
                 data: createdComment
@@ -81,24 +70,13 @@ export class CommentController {
                 return;
             }
 
-            const commentDto = plainToInstance(UpdateCommentDto, req.body);
-            const errors = await validate(commentDto);
-
-            if (errors.length > 0) {
-                res.status(400).json({
-                    message: "Validasyon hatası lütfen tekrar deneyiniz",
-                    error: errors.map(err => err.constraints)
-                });
-                return;
-            }
-
             const comment = await CommentModel.getById(Number(id));
             if (!comment) {
                 res.status(404).json({ message: "Güncellenicek yorum bulunamadı" });
                 return;
             }
 
-            const updatedComment = await CommentModel.update(Number(id), commentDto);
+            const updatedComment = await CommentModel.update(Number(id), req.body);
             res.status(200).json({ message: "Yorumunuz başarıyla güncellendi", data: updatedComment });
 
         } catch (error) {

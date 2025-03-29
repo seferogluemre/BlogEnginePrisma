@@ -6,7 +6,6 @@ export class CreateCategoryDto {
     name!: string;
 }
 
-
 export class UpdateCategoryDto {
     @IsString()
     @IsNotEmpty()
