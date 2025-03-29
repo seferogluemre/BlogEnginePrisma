@@ -1,7 +1,4 @@
 import { Request, Response } from "express";
-import { plainToInstance } from "class-transformer";
-import { validate } from "class-validator";
-import { CreateCategoryDto, UpdateCategoryDto } from "../dto/CategoryDto";
 import { CategoryModel } from "src/model/category_model";
 
 export class CategoryController {

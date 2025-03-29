@@ -1,14 +1,11 @@
 import { Request, Response } from "express";
-import { plainToInstance } from "class-transformer";
-import { validate } from "class-validator";
-import { CreatePostDto, UpdatePostDto } from "src/dto/CreatePostDto";
 import { PostModel } from "src/model/post_model";
 
 export class PostController {
     static async list(req: Request, res: Response): Promise<void> {
         try {
             const query = req.query;
-            const posts = await PostModel.list(query);
+            const posts = await PostModel.getAll(query);
             if (posts.length >= 0) {
                 res.status(200).json({ data: posts })
             } else {

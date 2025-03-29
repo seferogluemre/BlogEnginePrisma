@@ -21,6 +21,8 @@ model User {
   role           UserRole  @map("role")
   createdAt      DateTime  @default(now()) @map("created_at")
   deletedAt      DateTime? @map("deleted_at")
+
+  @@map("users")
 }
 
 model Category {

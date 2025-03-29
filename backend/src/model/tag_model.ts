@@ -5,7 +5,7 @@ import { CreateTagBody, UpdateTagBody } from "src/types/tag_types";
 const prisma = new PrismaClient();
 
 export class TagModel {
-    static async list() {
+    static async getAll() {
         return await prisma.tag.findMany({
             select: {
                 id: true,

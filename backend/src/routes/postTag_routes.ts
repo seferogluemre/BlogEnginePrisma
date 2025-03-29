@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { PostTagController } from "src/controller/postTag_controller";
-import { CreatePostTagDto } from "src/dto/CreatePostTagDto";
+import { CreatePostTagDto } from "src/dto/PostTagDto";
 import { validateDto } from "src/middlewares/requestValidationMiddleware";
 
 const router = Router()

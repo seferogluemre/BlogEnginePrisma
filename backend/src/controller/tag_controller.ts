@@ -1,13 +1,10 @@
-import e, { Request, Response } from "express";
-import { plainToInstance } from "class-transformer";
-import { validate } from "class-validator";
+import { Request, Response } from "express";
 import { TagModel } from "src/model/tag_model";
-import { CreateTagDto, UpdateTagDto } from "src/dto/CreateTagDto";
 
 export class TagController {
     static async list(req: Request, res: Response): Promise<void> {
         try {
-            const tags = await TagModel.list();
+            const tags = await TagModel.getAll();
             if (tags.length > 0) {
                 res.status(200).json({ data: tags });
             } else {

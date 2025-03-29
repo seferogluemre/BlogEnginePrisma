@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { TagController } from "src/controller/tag_controller";
-import { CreateTagDto, UpdateTagDto } from "src/dto/CreateTagDto";
+import { CreateTagDto, UpdateTagDto } from "src/dto/TagDto";
 import { validateAndCheckParams, validateDto } from "src/middlewares/requestValidationMiddleware";
 
 const router = Router();

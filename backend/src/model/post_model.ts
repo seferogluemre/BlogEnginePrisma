@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 
 export class PostModel {
 
-    static async list(query: PostQueryProps) {
+    static async getAll(query: PostQueryProps) {
         const whereConditions = POST_WHERE_CLAUSE(query);
 
         const posts = await prisma.post.findMany({

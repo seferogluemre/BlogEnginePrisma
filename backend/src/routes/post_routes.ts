@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { PostController } from "src/controller/post_controller";
-import { CreatePostDto, UpdatePostDto } from "src/dto/CreatePostDto";
+import { CreatePostDto, UpdatePostDto } from "src/dto/PostDto";
 import { validateAndCheckParams, validateDto } from "src/middlewares/requestValidationMiddleware";
 
 const router = Router()
