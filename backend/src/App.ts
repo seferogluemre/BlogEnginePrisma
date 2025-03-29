@@ -5,6 +5,7 @@ import post_routes from './routes/post_routes'
 import comment_routes from './routes/comment_routes'
 import tag_routes from './routes/tag_routes'
 import postTag_routes from './routes/postTag_routes'
+import user_routes from './routes/user_routes'
 import dotenv from 'dotenv'
 
 dotenv.config();
@@ -15,6 +16,7 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
 app.use(cors())
 
+app.use('/api/users', user_routes)
 app.use('/api/categories', category_routes)
 app.use('/api/posts', post_routes)
 app.use('/api/comments', comment_routes)

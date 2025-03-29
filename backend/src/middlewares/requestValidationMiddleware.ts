@@ -27,11 +27,11 @@ export const validateDto = (dtoClass: any) => {
 };
 
 
-export const checkTcParam = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const { tc } = req.params;
+export const checkIdParam = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const { id } = req.params;
 
-    if (!tc) {
-        res.status(400).json({ message: "tc_no param is required" });
+    if (!id) {
+        res.status(400).json({ message: "id param is required" });
         return Promise.resolve();
     }
 
@@ -45,6 +45,6 @@ export const checkTcParam = async (req: Request, res: Response, next: NextFuncti
 export const validateAndCheckParams = (dtoClass: any) => {
     return [
         validateDto(dtoClass),
-        checkTcParam,
+        checkIdParam,
     ];
 };
