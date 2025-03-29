@@ -1,11 +1,7 @@
 import { PrismaClient } from "@prisma/client";
+import { CreatePostTagBody } from "src/types/tag_types";
 
 const prisma = new PrismaClient
-
-interface CreatePostTagBody {
-    post_id: number;
-    tag_id: number;
-}
 
 // Create Post Tag
 export const createPostTag = async (data: CreatePostTagBody) => {

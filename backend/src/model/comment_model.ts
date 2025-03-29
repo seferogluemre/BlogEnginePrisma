@@ -1,26 +1,7 @@
 import { Prisma, PrismaClient } from "@prisma/client";
+import { CommentQueryProps, CreateCommentBody, UpdateCommentBody, WhereCondition } from "src/types/comment_types";
 
 const prisma = new PrismaClient;
-
-interface CreateCommentBody {
-    content: string;
-    commenter_name: string;
-    post_id: number;
-}
-
-interface UpdateCommentBody {
-    content: string;
-    commenter_name: string;
-    post_id: number;
-}
-
-type WhereCondition = Prisma.PostCommentWhereInput;
-
-export interface CommentQueryProps {
-    post: number;
-    commenter_name: string;
-}
-
 // List Post Comments
 export const getComments = async (query: CommentQueryProps) => {
     const whereCondition: WhereCondition = {};

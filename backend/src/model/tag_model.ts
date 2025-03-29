@@ -1,15 +1,7 @@
 import { PrismaClient } from "@prisma/client";
+import { CreateTagBody, UpdateTagBody } from "src/types/tag_types";
 
 const prisma = new PrismaClient
-
-// Types
-interface CreateTagBody {
-    name: string
-}
-
-interface UpdateTagBody {
-    name: string
-}
 
 // Tags List
 export const getTags = async () => {
