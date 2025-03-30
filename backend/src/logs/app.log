@@ -1,0 +1,9 @@
+[INFO] 2025-03-30T11:55:12.636Z - categoryList - İstek alındı
+[INFO] 2025-03-30T11:55:26.654Z - getCategory - Kategori: [object Object]
+[INFO] 2025-03-30T11:55:31.527Z - getCategory - Kategori: null
+[INFO] 2025-03-30T11:55:46.236Z - createCategory - Kategori ismi: Devops
+[INFO] 2025-03-30T11:56:10.500Z - updateCategory - Güncellenen Kategori: [object Object]
+[INFO] 2025-03-30T11:56:18.650Z - deleteCategory - Silinen Kategori: 2
+[INFO] 2025-03-30T11:56:27.184Z - listPosts - İstek alındı
+[INFO] 2025-03-30T11:56:33.957Z - getPost - İstek alındı
+[INFO] 2025-03-30T11:56:48.433Z - listComment - İstek alındı

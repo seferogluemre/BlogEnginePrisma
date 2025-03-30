@@ -5,6 +5,7 @@ import { CommentQueryProps, CreateCommentBody, UpdateCommentBody } from "src/typ
 const prisma = new PrismaClient();
 
 export class CommentModel {
+
     static async getAll(query: CommentQueryProps) {
         const whereCondition = COMMENT_WHERE_CLAUSE(query);
         return prisma.postComment.findMany({

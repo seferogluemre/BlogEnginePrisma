@@ -1,12 +1,13 @@
 import { Request, Response } from "express";
 import { CommentQueryProps } from "src/types/comment_types";
 import { CommentModel } from "src/model/comment_model";
+import { logInfo, logWarn } from "src/utils/loggerUtil";
 
 export class CommentController {
-
     static async list(req: Request<{}, {}, {}, CommentQueryProps>, res: Response): Promise<void> {
         try {
             const comments = await CommentModel.getAll(req.query);
+            logInfo(`listComment - İstek alındı`);
             if (comments.length >= 0) {
                 res.status(200).json({ data: comments });
             } else {
@@ -25,11 +26,13 @@ export class CommentController {
             const { id } = req.params;
 
             if (!id || isNaN(Number(id))) {
+                logWarn(`getComment - Hatalı yorum Id'si: ${name}`);
                 res.status(400).json({ message: "Geçerli bir yorum ID'si giriniz." });
                 return;
             }
-
             const comment = await CommentModel.getById(Number(id));
+
+            logInfo(`getComment - İstek alındı: ${comment}`);
             if (comment) {
                 res.status(200).json(comment);
             } else {
@@ -46,11 +49,11 @@ export class CommentController {
     static async add(req: Request, res: Response): Promise<void> {
         try {
             const createdComment = await CommentModel.create(req.body);
+            logInfo(`createComment - İstek alındı: ${createdComment}`);
             res.status(201).json({
                 message: "Yorumunuz oluşturuldu",
                 data: createdComment
-            });
-
+            })
         } catch (error) {
             res.status(404).json({
                 message: "Yorum oluşturulurken bir hata oluştu",
@@ -63,16 +66,19 @@ export class CommentController {
         try {
             const { id } = req.params;
             if (!id || isNaN(Number(id))) {
+                logWarn(`editComment - Hatalı yorum Id'si: ${id}`);
                 res.status(400).json({ message: "Geçerli bir yorum ID'si giriniz." });
                 return;
             }
 
             const comment = await CommentModel.getById(Number(id));
             if (!comment) {
+                logWarn(`editComment - Yorum bulunamadı: ${comment}`);
                 res.status(404).json({ message: "Güncellenicek yorum bulunamadı" });
                 return;
             }
 
+            logInfo(`editComment - Güncellenen yorum: ${comment}`);
             const updatedComment = await CommentModel.update(Number(id), req.body);
             res.status(200).json({ message: "Yorumunuz başarıyla güncellendi", data: updatedComment });
 
@@ -89,13 +95,17 @@ export class CommentController {
             const { id } = req.params;
 
             if (!id || isNaN(Number(id))) {
+                logWarn(`editComment - Hatalı yorum Id'si: ${id}`);
                 res.status(400).json({ message: "Geçerli bir yorum ID'si giriniz." });
                 return;
             }
 
+            logInfo(`removeComment - İstek alındı: ${id}`);
+
             const existingComment = await CommentModel.getById(Number(id));
 
             if (!existingComment) {
+                logWarn(`removeComment -Yorum bulunamadı: ${id}`);
                 res.status(404).json({ message: "Silinecek yorum bulunamadı." });
                 return;
             }

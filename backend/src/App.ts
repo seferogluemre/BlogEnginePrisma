@@ -19,6 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors(corsOptions));
 app.use(globalLimiter)
 
+
 app.use('/api/users', user_routes)
 app.use('/api/categories', category_routes)
 app.use('/api/posts', post_routes)
