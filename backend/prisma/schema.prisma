@@ -22,6 +22,8 @@ model User {
   createdAt      DateTime  @default(now()) @map("created_at")
   deletedAt      DateTime? @map("deleted_at")
 
+  sessions Session[]
+
   @@map("users")
 }
 
@@ -82,4 +84,17 @@ model PostTag {
 
   @@id([post_id, tag_id])
   @@map("post_tags")
+}
+
+model Session {
+  id     Int  @id @default(autoincrement()) @map("id")
+  userId Int  @map("user_id")
+  user   User @relation(fields: [userId], references: [id])
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @map("updated_at")
+  expiresAt DateTime  @map("expires_at")
+  revokedAt DateTime? @map("revoked_at")
+
+  @@map("sessions")
 }

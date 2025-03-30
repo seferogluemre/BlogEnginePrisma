@@ -28,6 +28,7 @@
     "class-validator": "^0.14.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
+    "express-rate-limit": "^7.5.0",
     "pg": "^8.13.3",
     "prisma-case-format": "^1.7.3",
     "reflect-metadata": "^0.2.2",
