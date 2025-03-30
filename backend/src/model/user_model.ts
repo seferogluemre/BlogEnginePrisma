@@ -53,21 +53,26 @@ export class UserModel {
         }
     }
 
-    static async getById(id: number) {
+    static async getUser(filter: { id?: number, username?: string }) {
         try {
-            if (!id) {
-                return { message: "Hatalı id gönderimi" };
+            const { id, username }: { id: number, username: string } = filter;
+
+            // Parametre kontrolü
+            if (!id && !username) {
+                return { message: "Hatalı id veya kullanıcı adı" };
             }
 
             const user = await prisma.user.findFirst({
                 where: {
-                    id: id,
-                    deletedAt: null // Silinmemiş kullanıcıyı getir
+                    ...(id && { id }),
+                    ...(username && { username }),
+                    deletedAt: null
                 },
                 select: {
                     name: true,
                     role: true,
                     username: true,
+                    hashedPassword: true,
                     createdAt: true,
                     id: true,
                 }

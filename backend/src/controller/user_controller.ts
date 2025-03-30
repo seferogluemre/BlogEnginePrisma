@@ -44,7 +44,7 @@ export class UserController {
                 res.status(400).json({ message: "Geçerli bir Kullanıcı ID'si giriniz." });
                 return;
             }
-            const user = await UserModel.getById(Number(id));
+            const user = await UserModel.getUser({ id: Number(id) })
             logInfo("getUser - İstek alındı")
             res.status(200).json({ data: user })
         } catch (error) {
