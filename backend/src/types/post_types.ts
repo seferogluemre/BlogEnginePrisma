@@ -3,6 +3,7 @@ export interface CreatePostBody {
     title: string;
     content: string;
     category_id?: number | null
+    user_id: number;
 }
 
 export interface UpdatePostBody {

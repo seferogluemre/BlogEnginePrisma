@@ -13,6 +13,10 @@ export class CreateCommentDto {
     @IsNumber()
     @IsNotEmpty()
     post_id!: number
+
+    @IsNumber()
+    @IsNotEmpty()
+    user_id!: number
 }
 
 export class UpdateCommentDto {

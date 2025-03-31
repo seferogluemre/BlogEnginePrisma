@@ -23,7 +23,15 @@ export class CommentModel {
                 commenter_name: true,
                 content: true,
                 created_at: true,
-                post_id: true
+                post_id: true,
+                User: {
+                    select: {
+                        id: true,
+                        name: true,
+                        username: true,
+                        role: true,
+                    }
+                }
             }
         });
     }
@@ -34,11 +42,20 @@ export class CommentModel {
                 content: data.content,
                 commenter_name: data.commenter_name,
                 post_id: data.post_id,
+                userId: data.user_id
             },
             select: {
                 content: true,
                 commenter_name: true,
-                post_id: true
+                post_id: true,
+                User: {
+                    select: {
+                        id: true,
+                        name: true,
+                        username: true,
+                        role: true,
+                    }
+                }
             }
         });
     }

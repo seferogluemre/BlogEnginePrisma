@@ -20,6 +20,14 @@ export class PostModel {
                 published_at: true,
                 post_tags: true,
                 post_comments: true,
+                User: {
+                    select: {
+                        id: true,
+                        name: true,
+                        role: true,
+                        username: true,
+                    }
+                }
             }
         });
 
@@ -43,6 +51,14 @@ export class PostModel {
                 category_id: true,
                 created_at: true,
                 published_at: true,
+                User: {
+                    select: {
+                        id: true,
+                        name: true,
+                        role: true,
+                        username: true,
+                    }
+                },
                 post_tags: true,
                 post_comments: true,
             }
@@ -54,12 +70,21 @@ export class PostModel {
             data: {
                 title: data.title,
                 content: data.content,
-                category_id: data.category_id ?? undefined,
+                userId: Number(data.user_id),
+                category_id: Number(data.category_id),
             },
             select: {
                 title: true,
                 content: true,
-                category_id: true
+                category_id: true,
+                User: {
+                    select: {
+                        id: true,
+                        name: true,
+                        role: true,
+                        username: true,
+                    }
+                }
             }
         });
     }

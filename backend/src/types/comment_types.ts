@@ -4,6 +4,7 @@ export interface CreateCommentBody {
     content: string;
     commenter_name: string;
     post_id: number;
+    user_id: number;
 }
 
 export interface UpdateCommentBody {

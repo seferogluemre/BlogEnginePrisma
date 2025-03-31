@@ -12,6 +12,10 @@ export class CreatePostDto {
 
     @IsNumber()
     category_id?: number
+
+    @IsNotEmpty()
+    @IsNumber()
+    user_id!: number
 }
 
 export class UpdatePostDto {

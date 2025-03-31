@@ -14,7 +14,6 @@ import { globalLimiter } from './config/rateLimitConfig'
 import { httpConfig } from './config/httpConfig'
 import { contentSecurityConfig } from './config/contentSecurityOption'
 
-
 dotenv.config();
 const app = express()
 const port = process.env.PORT || 3000;
@@ -26,7 +25,6 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
 app.use(cors(corsOptions));
 app.use(globalLimiter)
-
 
 app.use('/api/auth', auth_routes)
 app.use('/api/users', user_routes)
